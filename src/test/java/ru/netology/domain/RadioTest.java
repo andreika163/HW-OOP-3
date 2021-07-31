@@ -5,91 +5,124 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RadioTest {
-
-    Radio radio = new Radio();
-
+// в дефолтных тестах станция всегда на нуле
 
     @Test
-    void setDefaultStation() {
-        radio.setDefaultStation(10);
-        assertEquals(10,radio.getDefaultStation());
+    void stationUnderLimit() {
+        Radio service = new Radio();
 
-        radio.setDefaultStation(5);
-        assertEquals(5, radio.getDefaultStation());
-
-    }
-
-
-    @Test
-    void pushNextButtonDefaultStation() {
-        Radio radio = new Radio(10);
-
-        assertEquals(0,radio.getCurrentStation());
-
-        radio.pushNextButton();
-        assertEquals(1,radio.getCurrentStation());
-
-        radio.setCurrentStation(10);
-        radio.pushNextButton();
-        assertEquals(0,radio.getCurrentStation());
+        service.setCurrentStation(-1);
+        assertEquals(0, service.getCurrentStation());
     }
 
     @Test
-    void pushPrevButton() {
-        Radio radio = new Radio();
+    void stationAboveLimit() {
+        Radio service = new Radio();
 
-        radio.pushPrevButton();
-        assertEquals(10, radio.getCurrentStation());
-        radio.pushPrevButton();
-        assertEquals(9, radio.getCurrentStation());
+        service.setCurrentStation(10);
+        assertEquals(0, service.getCurrentStation());
 
-        radio.setCurrentStation(0);
-        radio.pushPrevButton();
-        assertEquals(10,radio.getCurrentStation());
+        service.setCurrentStation(4);
+        assertEquals(4, service.getCurrentStation());
     }
 
     @Test
-    void setCurrentStation() {
-        Radio radio = new Radio();
-        radio.setCurrentStation(5);
-        assertEquals(5, radio.getCurrentStation());
+    void stationAboveLimitConstructor() {
+        Radio service = new Radio(20);
+
+        service.setCurrentStation(-1);
+        assertEquals(0, service.getCurrentStation());
+
+        service.setCurrentStation(5);
+        assertEquals(5, service.getCurrentStation());
+    }
+
+    @Test
+    void stationPrevButton() {
+        Radio service = new Radio();
+
+        service.prevButton();
+        assertEquals(9, service.getCurrentStation());
+        service.prevButton();
+        assertEquals(8, service.getCurrentStation());
+    }
+
+    @Test
+    void stationPrevButtonConstructor() {
+        Radio service = new Radio(25);
+
+        service.prevButton();
+        assertEquals(24, service.getCurrentStation());
+        service.prevButton();
+        assertEquals(23, service.getCurrentStation());
+    }
+
+    @Test
+    void stationNextButton() {
+        Radio service = new Radio();
+
+        service.setCurrentStation(8);
+
+        service.nextStation();
+        assertEquals(9, service.getCurrentStation());
+        service.nextStation();
+        assertEquals(0, service.getCurrentStation());
+    }
+
+    @Test
+    void stationNextButtonConstructor() {
+        Radio service = new Radio(30);
+
+        service.setCurrentStation(28);
+
+        service.nextStation();
+        assertEquals(29, service.getCurrentStation());
+        service.nextStation();
+        assertEquals(0, service.getCurrentStation());
     }
 
     @Test
     void volumeUp() {
-        Radio radio = new Radio();
-// проверим что звук впринципе изменяется по требованию
-        radio.setVolume(0);
+        Radio service = new Radio();
 
-        radio.volumeUp();
-        assertEquals(1,radio.getVolume());
-        radio.volumeUp();
-        assertEquals(2,radio.getVolume());
-
-// проверим что звук не меняется после максимального уровня
-        radio.setVolume(100);
-        radio.volumeUp();
-        assertEquals(100,radio.getVolume());
+        service.volumeUp();
+        assertEquals(1, service.getVolume());
+        service.volumeUp();
+        assertEquals(2, service.getVolume());
     }
 
     @Test
-    void volumeDown() {
-        Radio radio = new Radio();
-// проверим что звук не меняется после минимума
-        radio.setVolume(0);
+    void volumeUpAboveMax() {
+        Radio service = new Radio();
 
-        radio.volumeDown();
-        assertEquals(0, radio.getVolume());
-// проверим что звук впринципе изменяется по требованию
-        radio.setVolume(100);
-        radio.volumeDown();
-        assertEquals(99,radio.getVolume());
+        int i = 0;
+        while (i <=100) {
+            service.volumeUp();
+            i++;
+        }
+        assertEquals(100, service.getVolume());
     }
 
     @Test
-    void setVolume(){
-        Radio radio =new Radio();
-        radio.setVolume(7);
-        assertEquals(7,radio.getVolume());
+    void volumeUpEndDown() {
+        Radio service = new Radio();
+
+        service.volumeUp();
+        assertEquals(1, service.getVolume());
+        service.volumeUp();
+        assertEquals(2, service.getVolume());
+
+        service.volumeDown();
+        assertEquals(1, service.getVolume());
+        service.volumeDown();
+        assertEquals(0, service.getVolume());
+    }
+
+    @Test
+    void volumeDownMin() {
+        Radio service = new Radio();
+
+        service.volumeDown();
+        assertEquals(0, service.getVolume());
     }
 }

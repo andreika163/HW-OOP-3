@@ -5,38 +5,32 @@ public class Radio {
     private int volume;
     private int defaultStation = 10;
 
+    public Radio(){
+    }
+
     public Radio(int defaultStation) {
         this.defaultStation = defaultStation;
     }
 
-    public Radio() {
-    }
-
-    public int getDefaultStation() {
-        return defaultStation;
-    }
-
-    public void setDefaultStation(int defaultStation) {
-        this.defaultStation = defaultStation;
-    }
-
-    public void pushNextButton() {
-        if (this.currentStation == 10) {
-            this.currentStation = 0;
+    public void nextStation () {
+        if (this.currentStation == defaultStation -1){
+            this.currentStation=0;
         } else {
             this.currentStation ++;
         }
     }
-
-    public void pushPrevButton() {
+    public void prevButton() {
         if (this.currentStation == 0) {
-            this.currentStation = 10;
+            this.currentStation = defaultStation - 1;
         } else {
             this.currentStation--;
         }
     }
 
     public void setCurrentStation(int currentStation) {
+        if (currentStation < 0 || currentStation > defaultStation - 1) {
+            return;
+        }
         this.currentStation = currentStation;
     }
 
@@ -44,27 +38,23 @@ public class Radio {
         return currentStation;
     }
 
-    public void setVolume(int volume) {
-        this.volume = volume;
-    }
-
-    public boolean volumeMax() {
-        return this.volume == 100;
-    }
-
-    public boolean volumeMin() {
-        return this.volume == 0;
+    private boolean isVolumeMax(int currentVolume) {
+        return currentVolume == 100;
     }
 
     public void volumeUp() {
-        if (this.volumeMax()) {
+        if (this.isVolumeMax(this.volume)) {
             return;
         }
         this.volume++;
     }
 
+    private boolean isVolumeMin(int currentVolume) {
+        return currentVolume == 0;
+    }
+
     public void volumeDown() {
-        if (this.volumeMin()) {
+        if (this.isVolumeMin(this.volume)) {
             return;
         }
         this.volume--;
